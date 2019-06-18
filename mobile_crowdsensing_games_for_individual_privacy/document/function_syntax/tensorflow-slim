@@ -1,0 +1,46 @@
+tf-slim是tensorflow中定义、训练和评估复杂度模型的轻量级库。tf-slim中的组件可以轻易和tensorflow框架以及
+tf.contrib.learn这样的框架进行整合。
+TF-Slim能使神经网络的构、训练和评估更简单
+with tf.variable_scope(scope_name):
+    weights = tf.get_variable('weight',...)
+    biases = tf.get_variable('bias',...)
+    conv = tf.nn.conv2d(...)
+    relu = tf.nn.relu(tf.nn.bias_add(conv,biases))
+
+net = slim.conv2d(input, 32, [3, 3])
+其中TF-SLim通过合并variable,layers and scopes，模型可以简洁地进行定义。各元素定义如下。
+Variables:
+    想在原生tensorflow中创建变量，要么需要一个预定义值，要么需要一种初始化机制。此外，如果变量需要在特定的
+    设备上创建，比如GPU上，则必要要显式指定。为了简化代码的变量创建。TF-Slim在Variables.py中提供了一批
+    轻量级的函数封装，从而使得调用者可以更加容易地定义变量。
+    weights = slim.variable('weights', shape = [10,10,3,3],
+                initializer = tf.truncated_normal_initializer(stddev=0.1),
+                regularizer = slim.l2_regularizer(0.05),
+                device = 'CPU:0')
+    其上，代码含义：创建一个weight变量，并且用truncated_normal初始化，用L2损失正则化，放置CPU中
+
+
+    在原生tensorflow中，有两种类型的变量：常规和局部变量。绝大部分都是常规变量，一旦创建，可以用Saver保存在磁盘中。
+    局部变量则只在一个session期间存在，且不会保存在磁盘中
+    TF-Slim通过定义model variables可以进一步区分变量，这种变量表示一个模型参数。模型变量在学习阶段被
+    训练或微调，在评估和预测阶段从checkpoint中加载。比如通过slim.fully_connected 或者slim.conv2d进行创建
+    的变量。非模型变量是在学习或评估阶段使用，但不会在预测阶段起作用的变量。如global_step,这个变量只在学习和评估阶段使用，
+    但不是模型的一部分。类似地，移动均值可以mirror模型参数，但是它们本身不是模型变量。
+    weights = slim.model_variable('weights',
+            shape = [10,10,3,3],
+            initializer = tf.truncated_normal_initializer(stddev=0.1),
+            regularizer=slim.l2_regularizer(0.5)
+            device = '/CPU:0'
+            )
+    model_variables = slim.get_model_variables()
+
+    my_var = slim.variable('my_var',
+            shape= [20,1],
+            initializer = tf.zeros_initializer()
+            )
+    regular_variables_and_model_variables = slim.get_variables
+    此函数可以将模型变量添加到集合中，让TF-Slim进行管理
+    slim.add_model_variable(my_model_variable)
+
+Layers:
+在一个神经网络中，一个
