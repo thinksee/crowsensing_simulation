@@ -21,8 +21,8 @@ DATA_RANGE = 100
 CONFIDENCE_LEVEL = 0.95
 PAYMENT_ACC = 0.5
 # about experiment
-MAX_EPISODE = 100
-MAX_STEP = 5000
+MAX_EPISODE = 10
+MAX_STEP = 50
 
 
 def game_2user(n_user=2):
@@ -136,7 +136,8 @@ def game_2user(n_user=2):
                        matrix_action_user2_index,
                        MAX_EPISODE,
                        MAX_STEP,
-                       'q_learning')
+                       'q_learning',
+                       'single')
 
 
 def game_n_user(n_user=60):  # todo 减少内存开销
@@ -258,9 +259,10 @@ def game_n_user(n_user=60):  # todo 减少内存开销
                       matrix_action_user_index,
                       MAX_EPISODE,
                       MAX_STEP,
-                      'q_learning')
+                      'q_learning',
+                      'multi')
 
 
 if __name__ == '__main__':
-    # game_2user()
+    game_2user()
     game_n_user()

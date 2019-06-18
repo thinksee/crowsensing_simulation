@@ -35,7 +35,8 @@ def plot_result_single(matrix_utility_mcs,
                        matrix_action_user2_index,
                        max_episode,
                        max_step,
-                       way):
+                       way,
+                       sm):
     array_utility_mcs = np.sum(matrix_utility_mcs, axis=0) / max_episode
     array_utility_mcs = array_utility_mcs.transpose()
     array_utility_user1 = np.sum(matrix_utility_user1, axis=0) / max_episode
@@ -59,7 +60,7 @@ def plot_result_single(matrix_utility_mcs,
     plt.plot(range(max_step), array_utility_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img'.format(way), 'single-utility-e-greedy-{}.png'.format(max_step))))
+            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'single-utility-e-greedy-{}.png'.format(max_step))))
     plt.tight_layout()
     # plt.close()
     # plot. the aggregate error of mcs
@@ -69,7 +70,7 @@ def plot_result_single(matrix_utility_mcs,
     plt.plot(range(max_step), array_aggregate_error)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img'.format(way), 'single-aggregate-error-e-greedy-{}.png'.format(max_step))))
+            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'single-aggregate-error-e-greedy-{}.png'.format(max_step))))
     # plt.close()
     # plot. the action by users and mcs.
     # In each time slot, get the action index with the largest number of occurrences.
@@ -85,7 +86,7 @@ def plot_result_single(matrix_utility_mcs,
     plt.plot(range(max_step), index_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img'.format(way), 'single-index-e-greedy-{}.png'.format(max_step))))
+            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'single-index-e-greedy-{}.png'.format(max_step))))
     plt.tight_layout()
     plt.close()
 
@@ -97,7 +98,8 @@ def plot_result_multi(matrix_utility_mcs,
                       matrix_action_user_index,
                       max_episode,
                       max_step,
-                      way):
+                      way,
+                      sm):
     array_utility_mcs = np.sum(matrix_utility_mcs, axis=0) / max_episode
     array_utility_mcs = array_utility_mcs.transpose()
     array_utility_user = np.sum(matrix_utility_user, axis=0) / max_episode
@@ -116,7 +118,7 @@ def plot_result_multi(matrix_utility_mcs,
     plt.plot(range(max_step), array_utility_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)),'{}\\img'.format(way), 'multi-utility-e-greedy-{}.png'.format(max_step))))
+            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'multi-utility-e-greedy-{}.png'.format(max_step))))
     plt.tight_layout()
     plt.close()
     # plot. the aggregate error of mcs
@@ -126,7 +128,7 @@ def plot_result_multi(matrix_utility_mcs,
     plt.plot(range(max_step), array_aggregate_error)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img'.format(way), 'multi-aggregate-error-e-greedy-{}.png'.format(max_step))))
+            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'multi-aggregate-error-e-greedy-{}.png'.format(max_step))))
     plt.close()
     # plot. the action by users and mcs.
     # In each time slot, get the action index with the largest number of occurrences.
@@ -139,7 +141,7 @@ def plot_result_multi(matrix_utility_mcs,
     plt.plot(range(max_step), index_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)),'{}\\img'.format(way), 'single-index-e-greedy-{}.png'.format(max_step))))
+            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'single-index-e-greedy-{}.png'.format(max_step))))
     plt.tight_layout()
     plt.close()
 

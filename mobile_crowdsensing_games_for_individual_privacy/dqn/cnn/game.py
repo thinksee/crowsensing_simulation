@@ -29,8 +29,8 @@ EPS_END = 0.1
 LEARNING_BEGIN = 10
 
 # about experiment
-MAX_STEP = 5000
-MAX_EPISODE = 100
+MAX_STEP = 5
+MAX_EPISODE = 10
 
 # about model
 DATA_RANGE = 100
@@ -160,12 +160,14 @@ def game_2user(n_user=2):
                        matrix_action_user1_index,
                        matrix_action_user2_index,
                        MAX_EPISODE,
-                       MAX_STEP)
+                       MAX_STEP,
+                       'dqn\\cnn',
+                       'single')
 
 
 def game_n_user(n_user=60):
     agent_mcs = MCSAgent(range(0, 20, 2))
-    agent_users = UserAgent(np.arange(0, 1.1, 0.1), np.arange(0, 1.1, 0.1), n_user)
+    agent_users = UserAgent(np.arange(0.1, 1.1, 0.1), np.arange(0.1, 1.1, 0.1), n_user)
     # the number of the privacy selected by users,
     # so that the length is the length of user's action.
     dqn_mcs = DQN(agent_users.get_actions_len(),
@@ -202,7 +204,7 @@ def game_n_user(n_user=60):
             # 1.1 server state. number of actions selected by all clients for each action
             cur_user_action_num = agent_users.zero_actions_len()
             for idx in range(n_user):
-                cur_user_action_num[cur_user_action_index[idx]] += 1
+                cur_user_action_num[int(cur_user_action_index[idx])] += 1
             cur_mcs_state = np.array(cur_user_action_num)
             # 1.2 client state. action of each client and server
             cur_user_state = agent_users.zero_user_state_len()
@@ -262,17 +264,17 @@ def game_n_user(n_user=60):
             # 6.1 client
             for idx in range(n_user):
                 # utility
-                matrix_utility_user[idx][step][episode] = r_user[idx]
+                matrix_utility_user[episode][step][idx] = r_user[idx]
                 # action
-                matrix_action_user[idx][step][episode] = cur_user_action[idx]
+                matrix_action_user[episode][step][idx] = cur_user_action[idx]
                 # action index
-                matrix_action_user_index[idx][step][episode] = cur_user_action_index[idx]
+                matrix_action_user_index[episode][step][idx] = cur_user_action_index[idx]
             # 6.2 server
-            matrix_action_mcs_index[step][episode] = cur_mcs_action_index
-            matrix_action_mcs[step][episode] = cur_mcs_action
-            matrix_utility_mcs[step][episode] = r_mcs
+            matrix_action_mcs_index[episode][step] = cur_mcs_action_index
+            matrix_action_mcs[episode][step] = cur_mcs_action
+            matrix_utility_mcs[episode][step] = r_mcs
             # aggregate error
-            matrix_aggregate_error[step][episode] = aggregate_error
+            matrix_aggregate_error[episode][step] = aggregate_error
 
             # 7. update state
             cur_mcs_action, cur_mcs_action_index, cur_mcs_state = next_mcs_action, next_mcs_action_index, next_mcs_state
@@ -283,12 +285,12 @@ def game_n_user(n_user=60):
     save_to_txt_multi(matrix_utility_mcs, 'utility', 'egreedy', 'mcs', MAX_STEP)
 
     matrix_utility_user = np.sum(matrix_utility_user, axis=2) / MAX_EPISODE
-    save_to_txt_multi(matrix_utility_user, 'utility', 'e-greedy', 'user', MAX_STEP)
+    save_to_txt_multi(matrix_utility_user, 'utility', 'egreedy', 'user', MAX_STEP)
 
     save_to_txt_multi(matrix_action_mcs_index, 'action', 'egreedy', 'mcs', MAX_STEP)
 
     matrix_action_user_index = np.max(matrix_action_user_index, axis=2)
-    save_to_txt_multi(matrix_action_user_index, 'action', 'e-greedy', 'user', MAX_STEP)
+    save_to_txt_multi(matrix_action_user_index, 'action', 'egreedy', 'user', MAX_STEP)
 
     save_to_txt_multi(matrix_aggregate_error, 'aggregate-error', 'egreedy', 'mcs', MAX_STEP)
 
@@ -298,9 +300,11 @@ def game_n_user(n_user=60):
                       matrix_action_mcs_index,
                       matrix_action_user_index,
                       MAX_EPISODE,
-                      MAX_STEP)
+                      MAX_STEP,
+                      'dqn\\cnn',
+                      'multi')
 
 
 if __name__ == '__main__':
-    # plot_result()
+    game_n_user(n_user=60)
     game_2user()

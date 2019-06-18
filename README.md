@@ -4,15 +4,12 @@ some simulation about the moblie crow-sensing, like the q-learning, cnn-dqn and 
 
 ## a secure mobile crowd-sensing game with drl
 
+reference [A Secure Mobile Crowdsensing Game With Deep Reinforcement Learning](https://ieeexplore.ieee.org/document/8006228) ,
+and the basic simulation is realized.
 
 
+## mobile crowsensing games in vehicular networks
+reference [Mobile Crowdsensing Games in Vehicular Networks](https://ieeexplore.ieee.org/document/7805305),
+and the basic simulation is realized.
 
-### 关于Mobile Crowdsensing Games in Vehicular Networks的实验python的部分仿真，涉及Q-learning和博弈论(game)
-
-# crowsensing with dqn
-
-### 关于A Secure Mobile Crowdsensing Game With Deep Reinforcement Learning的实验仿真，暂时没有使用python进行实现
-
-# crowsensing with dl
-
-### 后续使用dl常用算法 value function 和 policy gradient
+## mobile crowsensing games for individual privacy
