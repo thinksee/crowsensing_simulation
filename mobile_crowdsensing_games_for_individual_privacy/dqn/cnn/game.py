@@ -38,16 +38,17 @@ CONFIDENCE_LEVEL = 0.95
 PAYMENT_ACC = 0.5
 
 
-def game_2user(n_user=2):
-    agent_mcs = MCSAgent(range(0, 20, 2))
-    agent_user1 = UserAgent(np.arange(0.1, 1.1, 0.1), np.arange(0.1, 1.1, 0.1))
-    agent_user2 = UserAgent(np.arange(0.1, 1.1, 0.1), np.arange(0.1, 1.1, 0.1))
+def game_2user(n_user=2, func=1):
+    agent_mcs = MCSAgent(np.arange(1, 5, 0.5))
+    agent_user1 = UserAgent(np.arange(1, 21, 2), np.arange(0.1, 1.1, 0.1))
+    agent_user2 = UserAgent(np.arange(1, 21, 2), np.arange(0.1, 1.1, 0.1))
     # input_length : [user1_state, user2_state]
     model_mcs = DQN(n_user, agent_mcs.n_actions,
                     memory_capacity=MEMORY_CAPACITY, window=WINDOW,
                     gamma=GAMMA, eps_start=EPS_START,
                     eps_end=EPS_END, anneal_step=ANNEAL_STEP,
-                    learning_begin=LEARNING_BEGIN)
+                    learning_begin=LEARNING_BEGIN
+                    )
     # input_length ; [user1_state, payment]
     model_user1 = DQN(n_user, agent_user1.get_actions_len(),
                       memory_capacity=MEMORY_CAPACITY, window=WINDOW,
@@ -100,12 +101,23 @@ def game_2user(n_user=2):
             # 3. game
             # 3.1 leader multi-cast the payment list
             payment = agent_mcs.get_payments(cur_mcs_action, agent_user1.get_actions_len(), PAYMENT_ACC)
-            aggregate_error, mcs_utility_total = agent_mcs.get_mcs_utility_reciprocal(
-                user_action_list=[cur_user1_action, cur_user2_action],
-                data_range=DATA_RANGE,
-                confidence_level=CONFIDENCE_LEVEL,
-                n_user=n_user)
-            r_mcs = mcs_utility_total - payment[cur_user1_action_index] - payment[cur_user2_action_index]
+
+            if func == 1:
+                aggregate_error, mcs_utility_all = agent_mcs.get_mcs_utility_reciprocal(
+                    user_action_list=[cur_user1_action, cur_user2_action],
+                    data_range=DATA_RANGE,
+                    confidence_level=CONFIDENCE_LEVEL,
+                    n_user=n_user)
+            elif func == 2:
+                aggregate_error, mcs_utility_all = agent_mcs.get_mcs_utility_percentage(
+                    user_action_list=[cur_user1_action, cur_user2_action],
+                    data_range=DATA_RANGE,
+                    confidence_level=CONFIDENCE_LEVEL,
+                    n_user=n_user)
+            else:
+                raise NameError('function is\'t exist.')
+
+            r_mcs = mcs_utility_all - payment[cur_user1_action_index] - payment[cur_user2_action_index]
 
             # 3.2 followers get utility
             r_user1 = payment[cur_user1_action_index] - agent_user1.get_cost_value(cur_user1_action_index) * cur_user1_action
@@ -133,7 +145,7 @@ def game_2user(n_user=2):
             matrix_action_user1_index[episode][step] = cur_user1_action_index
             matrix_action_user2_index[episode][step] = cur_user2_action_index
             # aggregate error
-            matrix_aggregate_error[episode][step] = mcs_utility_total
+            matrix_aggregate_error[episode][step] = aggregate_error
 
             # 7. update state
             cur_mcs_action, cur_mcs_action_index, cur_mcs_state = next_mcs_action, next_mcs_action_index, next_mcs_state
@@ -141,16 +153,23 @@ def game_2user(n_user=2):
             cur_user2_action, cur_user2_action_index, cur_user2_state = next_user2_action, next_user2_action_index, next_user1_state
 
     # 8. persistence parameter
-    # single, data, utility, greedy, mcs, max_step
-    save_to_txt_single(matrix_utility_mcs, 'utility', 'egreedy', 'mcs', MAX_STEP)
-    save_to_txt_single(matrix_utility_user1, 'utility', 'egreedy', 'user1', MAX_STEP)
-    save_to_txt_single(matrix_utility_user2, 'utility', 'egreedy', 'user2', MAX_STEP)
+    # data, utility, greedy, mcs, max_step, n_user=120, function='reciprocal'
+    if func == 1:
+        f = 'reciprocal'
+    elif func == 2:
+        f = 'percentage'
+    else:
+        raise NameError('function is\'t exist.')
 
-    save_to_txt_single(matrix_action_mcs_index, 'action', 'egreedy', 'mcs', MAX_STEP)
-    save_to_txt_single(matrix_action_user1_index, 'action', 'egreedy', 'user1', MAX_STEP)
-    save_to_txt_single(matrix_action_user2_index, 'action', 'egreedy', 'user2', MAX_STEP)
+    save_to_txt_single(matrix_utility_mcs, 'utility', 'egreedy', 'mcs', MAX_STEP, n_user, f)
+    save_to_txt_single(matrix_utility_user1, 'utility', 'egreedy', 'user1', MAX_STEP, n_user, f)
+    save_to_txt_single(matrix_utility_user2, 'utility', 'egreedy', 'user2', MAX_STEP, n_user, f)
 
-    save_to_txt_single(matrix_aggregate_error, 'aggregate-error', 'egreedy', 'mcs', MAX_STEP)
+    save_to_txt_single(matrix_action_mcs_index, 'action', 'egreedy', 'mcs', MAX_STEP, n_user, f)
+    save_to_txt_single(matrix_action_user1_index, 'action', 'egreedy', 'user1', MAX_STEP, n_user, f)
+    save_to_txt_single(matrix_action_user2_index, 'action', 'egreedy', 'user2', MAX_STEP, n_user, f)
+
+    save_to_txt_single(matrix_aggregate_error, 'aggregate-error', 'egreedy', 'mcs', MAX_STEP, n_user, f)
 
     plot_result_single(matrix_utility_mcs,
                        matrix_utility_user1,
@@ -162,12 +181,14 @@ def game_2user(n_user=2):
                        MAX_EPISODE,
                        MAX_STEP,
                        'dqn\\cnn',
-                       'single')
+                       'single',
+                       f,
+                       n_user)
 
 
-def game_n_user(n_user=60):
-    agent_mcs = MCSAgent(range(0, 20, 2))
-    agent_users = UserAgent(np.arange(0.1, 1.1, 0.1), np.arange(0.1, 1.1, 0.1), n_user)
+def game_n_user(n_user=60, func=1):
+    agent_mcs = MCSAgent(np.arange(1, 5, 0.5))
+    agent_users = UserAgent(np.arange(1, 21, 2), np.arange(0.1, 1.1, 0.1), n_user)
     # the number of the privacy selected by users,
     # so that the length is the length of user's action.
     dqn_mcs = DQN(agent_users.get_actions_len(),
@@ -227,12 +248,22 @@ def game_n_user(n_user=60):
             # 3.1 leader multicast the payment list
             payment = agent_mcs.get_payments(next_mcs_action, agent_users.get_actions_len(), 0.5)
 
-            aggregate_error, mcs_utility_reciprocal = agent_mcs.get_mcs_utility_reciprocal(
-                user_action_list=next_user_action,
-                data_range=DATA_RANGE,
-                confidence_level=CONFIDENCE_LEVEL,
-                n_user=n_user)
-            r_mcs = agent_mcs.get_mcs_reward(mcs_utility_reciprocal, next_user_action_index, payment)
+            if func == 1:
+                aggregate_error, mcs_utility_all = agent_mcs.get_mcs_utility_reciprocal(
+                    user_action_list=cur_user_action,
+                    data_range=DATA_RANGE,
+                    confidence_level=CONFIDENCE_LEVEL,
+                    n_user=n_user)
+            elif func == 2:
+                aggregate_error, mcs_utility_all = agent_mcs.get_mcs_utility_percentage(
+                    user_action_list=cur_user_action,
+                    data_range=DATA_RANGE,
+                    confidence_level=CONFIDENCE_LEVEL,
+                    n_user=n_user)
+            else:
+                raise NameError('function is\'t exist.')
+
+            r_mcs = agent_mcs.get_mcs_reward(mcs_utility_all, next_user_action_index, payment)
 
             # 3.2 followers get utility
             r_user = agent_users.zero_user_len(tt=np.float32)
@@ -280,19 +311,25 @@ def game_n_user(n_user=60):
             cur_mcs_action, cur_mcs_action_index, cur_mcs_state = next_mcs_action, next_mcs_action_index, next_mcs_state
             cur_user_action, cur_user_action_index, cur_user_state = next_user_action, next_user_action_index, next_user_state
 
-        # 8. persistence parameter
-        # single, data, utility, greedy, mcs, max_step
-    save_to_txt_multi(matrix_utility_mcs, 'utility', 'egreedy', 'mcs', MAX_STEP)
+    # 8. persistence parameter
+    # data, utility, greedy, mcs, max_step, n_user=120, function='reciprocal'
+    if func == 1:
+        f = 'reciprocal'
+    elif func == 2:
+        f = 'percentage'
+    else:
+        raise NameError('function is\'t exist.')
+    save_to_txt_multi(matrix_utility_mcs, 'utility', 'egreedy', 'mcs', MAX_STEP, n_user, f)
 
-    matrix_utility_user = np.sum(matrix_utility_user, axis=2) / MAX_EPISODE
-    save_to_txt_multi(matrix_utility_user, 'utility', 'egreedy', 'user', MAX_STEP)
+    matrix_utility_user = np.sum(matrix_utility_user, axis=2) / n_user
+    save_to_txt_multi(matrix_utility_user, 'utility', 'egreedy', 'user', MAX_STEP, n_user, f)
 
-    save_to_txt_multi(matrix_action_mcs_index, 'action', 'egreedy', 'mcs', MAX_STEP)
+    save_to_txt_multi(matrix_action_mcs_index, 'action', 'egreedy', 'mcs', MAX_STEP, n_user, f)
 
     matrix_action_user_index = np.max(matrix_action_user_index, axis=2)
-    save_to_txt_multi(matrix_action_user_index, 'action', 'egreedy', 'user', MAX_STEP)
+    save_to_txt_multi(matrix_action_user_index, 'action', 'egreedy', 'user', MAX_STEP, n_user, f)
 
-    save_to_txt_multi(matrix_aggregate_error, 'aggregate-error', 'egreedy', 'mcs', MAX_STEP)
+    save_to_txt_multi(matrix_aggregate_error, 'aggregate-error', 'egreedy', 'mcs', MAX_STEP, n_user, f)
 
     plot_result_multi(matrix_utility_mcs,
                       matrix_utility_user,
@@ -302,9 +339,11 @@ def game_n_user(n_user=60):
                       MAX_EPISODE,
                       MAX_STEP,
                       'dqn\\cnn',
-                      'multi')
+                      'multi',
+                      f,
+                      n_user)
 
 
 if __name__ == '__main__':
-    game_n_user(n_user=60)
-    game_2user()
+    game_n_user(n_user=60, func=1)
+    game_2user(n_user=2, func=1)

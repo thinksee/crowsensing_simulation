@@ -66,13 +66,12 @@ class MCSAgent(object):
         for user_action in user_action_list:
             privacy_parameter_square_reci_sum += (1 / np.square(user_action))
 
-        utility = 4000
+        utility = 1000
         aggregate_error = np.sqrt(2) * data_range / (n_user * np.sqrt(1 - confidence_level)) * \
                           np.sqrt(privacy_parameter_square_reci_sum)
-        utility = 1 / aggregate_error * utility
+        utility = 1.0 / aggregate_error * utility
         return aggregate_error, utility
 
-    # TODO
     @staticmethod
     def get_mcs_utility_percentage(user_action_list, data_range, confidence_level, n_user):
         """
@@ -85,14 +84,13 @@ class MCSAgent(object):
         """
         if n_user > len(user_action_list):
             raise RuntimeError('the user action list not enough.')
-            privacy_parameter_square_reci_sum = 0
+        privacy_parameter_square_perc_sum = 0
         for user_action in user_action_list:
-            privacy_parameter_square_reci_sum += (1 / np.square(user_action))
-        utility = 500
-        utility = (1 - (np.sqrt(2) * data_range / (n_user * np.sqrt(n_user - confidence_level)) *
-                            np.sqrt(1 / privacy_parameter_square_sum)) / data_range) * utility
-        aggregate_error = np.sqrt(2) * data_range / (n_user * np.sqrt(n_user - confidence_level)) * \
-                              np.sqrt(1 / privacy_parameter_square_sum)
+            privacy_parameter_square_perc_sum += (1 / np.square(user_action))
+        utility = 1500
+        aggregate_error = np.sqrt(2) * data_range / (n_user * np.sqrt(1 - confidence_level)) * \
+                          np.sqrt(privacy_parameter_square_perc_sum)
+        utility = (1.0 - aggregate_error / data_range) * utility
         return aggregate_error, utility
 
 
