@@ -6,6 +6,7 @@ from mobile_crowdsensing_games_for_individual_privacy.agent import UserAgent, MC
 from mobile_crowdsensing_games_for_individual_privacy.utils import get_saved_matrix_single, get_saved_matrix_mulit
 from mobile_crowdsensing_games_for_individual_privacy.utils import save_to_txt_single, save_to_txt_multi
 from mobile_crowdsensing_games_for_individual_privacy.utils import plot_result_single, plot_result_multi
+from mobile_crowdsensing_games_for_individual_privacy.param import *
 from tqdm import tqdm
 import os
 import numpy as np
@@ -16,19 +17,12 @@ if not os.path.exists('img'):
 
 if not os.path.exists('data'):
     os.makedirs('data')
-# constant about model
-DATA_RANGE = 100
-CONFIDENCE_LEVEL = 0.95
-PAYMENT_ACC = 0.5
-# about experiment
-MAX_EPISODE = 10
-MAX_STEP = 50
 
 
 def game_2user(n_user=2, func=1):
     """
     :param n_user:
-    :param function:  reciprocal or percentage, where function=1 represent reciprocal and
+    :param func:  reciprocal or percentage, where function=1 represent reciprocal and
       function = 2 represent percentage.
     :return:
     """

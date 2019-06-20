@@ -7,6 +7,7 @@ from mobile_crowdsensing_games_for_individual_privacy.q_learning.qlearning impor
 from mobile_crowdsensing_games_for_individual_privacy.utils import get_saved_matrix_mulit, get_saved_matrix_single
 from mobile_crowdsensing_games_for_individual_privacy.utils import save_to_txt_multi, save_to_txt_single
 from mobile_crowdsensing_games_for_individual_privacy.utils import plot_result_multi, plot_result_single
+from mobile_crowdsensing_games_for_individual_privacy.param import *
 from tqdm import tqdm
 import numpy as np
 import os
@@ -16,26 +17,6 @@ if not os.path.exists('img'):
 
 if not os.path.exists('data'):
     os.makedirs('data')
-
-# some constant about learning algorithm.
-# about cnn
-MEMORY_CAPACITY = 1000
-WINDOW = 15
-BATCH_SIZE = 32
-ANNEAL_STEP = 300
-GAMMA = 0.5
-EPS_START = 1.0
-EPS_END = 0.1
-LEARNING_BEGIN = 10
-
-# about experiment
-MAX_STEP = 5
-MAX_EPISODE = 10
-
-# about model
-DATA_RANGE = 100
-CONFIDENCE_LEVEL = 0.95
-PAYMENT_ACC = 0.5
 
 
 def game_2user(n_user=2, func=1):
