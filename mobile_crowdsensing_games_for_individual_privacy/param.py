@@ -1,7 +1,20 @@
+import numpy as np
 # constant about model
 DATA_RANGE = 100
 CONFIDENCE_LEVEL = 0.95
 PAYMENT_ACC = 0.5
+
+USER_COST = np.arange(0.1, 1.1, 0.1)
+USER_ACTION = np.arange(0.1, 1.1, 0.1)
+MCS_ACTION = np.arange(1.0, 5.5, 0.2)
+
+N_USER_MULTI = 60
+N_USER_SINGLE = 2
+
+
+FUNC = 1  # only 1(reciprocal) and 2(percentage)
+
+ALGO = 2  # 1(q-learning) 2(cnn-dqn)
 
 # some constant about learning algorithm.
 # about cnn
@@ -17,3 +30,6 @@ LEARNING_BEGIN = 10
 # about experiment
 MAX_EPISODE = 10
 MAX_STEP = 50
+
+
+

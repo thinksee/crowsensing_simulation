@@ -23,27 +23,27 @@ def get_saved_matrix_mulit(episode, step, n_user):
     return np.zeros([episode, step, n_user])
 
 
-def save_to_txt_single(data, utility, greedy, mcs, max_step, n_user=120, function='reciprocal'):
+def save_to_txt_single(data, utility, greedy, mcs, max_step, n_user=120, function='reciprocal', algorithm=1):
     if utility == 'utility':
-        np.savetxt('data\\single\\1-{}-{}-{}-{}-{}-{}.txt'.format(utility, greedy, mcs, max_step, n_user, function),
+        np.savetxt('result\\data\\single\\{}\\1-{}-{}-{}-{}-{}-{}.txt'.format(algorithm, utility, greedy, mcs, max_step, n_user, function),
                    data, fmt='%.2f')
     elif utility == 'action':
-        np.savetxt('data\\single\\2-{}-{}-{}-{}-{}-{}.txt'.format(utility, greedy, mcs, max_step, n_user, function),
+        np.savetxt('result\\data\\single\\{}\\2-{}-{}-{}-{}-{}-{}.txt'.format(algorithm, utility, greedy, mcs, max_step, n_user, function),
                    data, fmt='%.2f')
     else:
-        np.savetxt('data\\single\\3-{}-{}-{}-{}-{}-{}.txt'.format(utility, greedy, mcs, max_step, n_user, function),
+        np.savetxt('result\\data\\single\\{}\\3-{}-{}-{}-{}-{}-{}.txt'.format(algorithm, utility, greedy, mcs, max_step, n_user, function),
                    data, fmt='%.2f')
 
 
-def save_to_txt_multi(data, utility, greedy, mcs, max_step, n_user=120, function='reciprocal'):
+def save_to_txt_multi(data, utility, greedy, mcs, max_step, n_user=120, function='reciprocal', algorithm=1):
     if utility == 'utility':
-        np.savetxt('data\\multi\\1-{}-{}-{}-{}-{}-{}.txt'.format(utility, greedy, mcs, max_step, n_user, function),
+        np.savetxt('result\\data\\multi\\{}\\1-{}-{}-{}-{}-{}-{}.txt'.format(algorithm, utility, greedy, mcs, max_step, n_user, function),
                    data, fmt='%.2f')
     elif utility == 'action':
-        np.savetxt('data\\multi\\2-{}-{}-{}-{}-{}-{}.txt'.format(utility, greedy, mcs, max_step, n_user, function),
+        np.savetxt('result\\data\\multi\\{}\\2-{}-{}-{}-{}-{}-{}.txt'.format(algorithm, utility, greedy, mcs, max_step, n_user, function),
                    data, fmt='%.2f')
     else:
-        np.savetxt('data\\multi\\3-{}-{}-{}-{}-{}-{}.txt'.format(utility, greedy, mcs, max_step, n_user, function),
+        np.savetxt('result\\data\\multi\\{}\\3-{}-{}-{}-{}-{}-{}.txt'.format(algorithm, utility, greedy, mcs, max_step, n_user, function),
                    data, fmt='%.2f')
 
 
@@ -58,8 +58,9 @@ def plot_result_single(matrix_utility_mcs,
                        max_step,
                        way,
                        sm,
+                       n_user,
                        func,
-                       n_user):
+                       algorithm):
     array_utility_mcs = np.sum(matrix_utility_mcs, axis=0) / max_episode
     array_utility_mcs = array_utility_mcs.transpose()
     array_utility_user1 = np.sum(matrix_utility_user1, axis=0) / max_episode
@@ -83,7 +84,9 @@ def plot_result_single(matrix_utility_mcs,
     plt.plot(range(max_step), array_utility_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'single-utility-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
+            os.path.dirname(__file__)), 'result\\img\\{}\\{}'.format(sm, algorithm),
+            'single-utility-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
+
     plt.tight_layout()
     plt.close()
     # plot. the aggregate error of mcs
@@ -93,7 +96,8 @@ def plot_result_single(matrix_utility_mcs,
     plt.plot(range(max_step), array_aggregate_error)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'single-aggregate-error-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
+            os.path.dirname(__file__)), 'result\\img\\{}\\{}'.format(sm, algorithm),
+            'single-aggregate-error-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
     plt.close()
     # plot. the action by users and mcs.
     # In each time slot, get the action index with the largest number of occurrences.
@@ -109,7 +113,8 @@ def plot_result_single(matrix_utility_mcs,
     plt.plot(range(max_step), index_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'single-index-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
+            os.path.dirname(__file__)), 'result\\img\\{}\\{}'.format(sm, algorithm),
+            'single-index-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
     plt.tight_layout()
     plt.close()
 
@@ -123,8 +128,9 @@ def plot_result_multi(matrix_utility_mcs,
                       max_step,
                       way,
                       sm,
+                      n_user,
                       func,
-                      n_user):
+                      algorithm):
     array_utility_mcs = np.sum(matrix_utility_mcs, axis=0) / max_episode
     array_utility_mcs = array_utility_mcs.transpose()
     array_utility_user = np.sum(matrix_utility_user, axis=0) / max_episode
@@ -143,7 +149,8 @@ def plot_result_multi(matrix_utility_mcs,
     plt.plot(range(max_step), array_utility_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'multi-utility-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
+            os.path.dirname(__file__)), 'result\\img\\{}\\{}'.format(sm, algorithm),
+            'multi-utility-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
     plt.tight_layout()
     plt.close()
     # plot. the aggregate error of mcs
@@ -153,7 +160,8 @@ def plot_result_multi(matrix_utility_mcs,
     plt.plot(range(max_step), array_aggregate_error)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'multi-aggregate-error-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
+            os.path.dirname(__file__)), 'result\\img\\{}\\{}'.format(sm, algorithm),
+            'multi-aggregate-error-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
     plt.close()
     # plot. the action by users and mcs.
     # In each time slot, get the action index with the largest number of occurrences.
@@ -166,7 +174,8 @@ def plot_result_multi(matrix_utility_mcs,
     plt.plot(range(max_step), index_mcs)
     plt.savefig(
         os.path.abspath(os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), '{}\\img\\{}'.format(way, sm), 'multi-index-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
+            os.path.dirname(__file__)), 'result\\img\\{}\\{}'.format(sm, algorithm).format(way, sm),
+            'multi-index-e-greedy-{}-{}-{}.png'.format(max_step, n_user, func))))
     plt.tight_layout()
     plt.close()
 

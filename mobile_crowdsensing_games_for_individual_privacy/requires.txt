@@ -1,0 +1,4 @@
+conda/pip install matplotlib
+conda/pip install numpy
+conda/pip install tqdm
+conda/pip install

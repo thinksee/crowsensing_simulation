@@ -66,7 +66,7 @@ class MCSAgent(object):
         for user_action in user_action_list:
             privacy_parameter_square_reci_sum += (1 / np.square(user_action))
 
-        utility = 1000
+        utility = 100000
         aggregate_error = np.sqrt(2) * data_range / (n_user * np.sqrt(1 - confidence_level)) * \
                           np.sqrt(privacy_parameter_square_reci_sum)
         utility = 1.0 / aggregate_error * utility
@@ -96,6 +96,8 @@ class MCSAgent(object):
 
 class UserAgent(object):
     def __init__(self, actions, costs, n_user=2):
+        if len(actions) != len(costs):
+            raise RuntimeError('The action and cost of User Agent is\'t the same length.')
         self.__actions = actions
         self.__n_actions = len(actions)
         self.__costs = costs
@@ -130,7 +132,7 @@ class UserAgent(object):
         return action_index, action_value
 
     def zero_actions_len(self):
-         return np.zeros(self.__n_actions, dtype=np.int32)
+        return np.zeros(self.__n_actions, dtype=np.int32)
 
     def zero_user_state_len(self):
         return ['' for _ in range(self.__n_user)]

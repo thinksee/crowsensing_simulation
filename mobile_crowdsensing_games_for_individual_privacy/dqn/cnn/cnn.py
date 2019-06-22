@@ -85,7 +85,15 @@ class DQNModel(nn.Module):
 
     def __init__(self, input_length, num_action):
         super(DQNModel, self).__init__()
-
+        """
+        Layer               Conv1               Conv2               FC1               FC2             
+        Input               6x6                 4x4x20
+        Filter size
+        Stride
+        Num. of filter 
+        Activation
+        Output
+        """
         self.num_action = num_action
         self.cov1 = nn.Conv1d(1, 20, kernel_size=3)
         self.bn1 = nn.BatchNorm1d(20)
