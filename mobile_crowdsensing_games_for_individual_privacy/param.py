@@ -1,16 +1,17 @@
 import numpy as np
 # constant about model
-DATA_RANGE = 100
+DATA_RANGE = 10
 CONFIDENCE_LEVEL = 0.95
 PAYMENT_ACC = 0.5
 
 USER_COST = np.arange(0.1, 1.1, 0.1)
 USER_ACTION = np.arange(0.1, 1.1, 0.1)
-MCS_ACTION = np.arange(1.0, 5.5, 0.2)
+MCS_ACTION = np.arange(0.1, 0.55, 0.02)
 
 N_USER_MULTI = 60
 N_USER_SINGLE = 2
 
+INTERVAL = 100
 
 FUNC = 1  # only 1(reciprocal) and 2(percentage)
 

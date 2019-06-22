@@ -129,7 +129,7 @@ def game_2user(n_user=N_USER_SINGLE, func=FUNC, algorithm=ALGO):
             else:
                 raise NameError('function is\'t exist.')
 
-            cur_r_mcs = mcs_utility_all - payment[cur_user1_action_index] - payment[cur_user2_action_index]
+            cur_r_mcs = (mcs_utility_all - payment[cur_user1_action_index] - payment[cur_user2_action_index]) / INTERVAL
 
             # 3.2 followers get utility
             cur_r_user1 = payment[cur_user1_action_index] - agent_user1.get_cost_value(cur_user1_action_index) * cur_user1_action
@@ -315,7 +315,7 @@ def game_n_user(n_user=N_USER_MULTI, func=FUNC, algorithm=1):
             else:
                 raise NameError('function is\'t exist.')
 
-            cur_r_mcs = agent_mcs.get_mcs_reward(mcs_utility_all, cur_user_action_index, payment)
+            cur_r_mcs = agent_mcs.get_mcs_reward(mcs_utility_all, cur_user_action_index, payment) / INTERVAL
 
             # 3.2 followers get utility
             cur_r_user = agent_users.zero_user_len(tt=np.float32)

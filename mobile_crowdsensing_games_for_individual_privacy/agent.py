@@ -66,7 +66,7 @@ class MCSAgent(object):
         for user_action in user_action_list:
             privacy_parameter_square_reci_sum += (1 / np.square(user_action))
 
-        utility = 100000
+        utility = 10e4
         aggregate_error = np.sqrt(2) * data_range / (n_user * np.sqrt(1 - confidence_level)) * \
                           np.sqrt(privacy_parameter_square_reci_sum)
         utility = 1.0 / aggregate_error * utility
