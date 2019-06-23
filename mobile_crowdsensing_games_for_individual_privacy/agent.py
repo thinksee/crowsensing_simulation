@@ -40,11 +40,11 @@ class MCSAgent(object):
         return 0, 0
 
     @staticmethod
-    def get_payments(action, len, acc):
-        payments = list()
-        payments.append(0)
-        for _ in range(len - 1):
-            payments.append(action)
+    def get_payments(action, length, acc):
+        payments = np.zeros(length)
+        payments.put(0, 0)
+        for idx in range(length - 1):
+            payments.put(idx, action)
             action += acc
         return payments
 

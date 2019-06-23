@@ -12,10 +12,10 @@ class QLearningSingleUser:
     def __init__(self, actions, learning_rate=0.1, reward_decay=0.9, e_greedy=0.9):
         """
         The class that
-        :param actions: the action of the agent, is a value, not index.
+        :param actions: the action of the agent, is a index, not value.
         :param learning_rate: the learning of q learning, [] can be the best.
-        :param reward_decay:  the reward decay of q learning, while is a number between 0 and 1.
-        :param e_greedy:  the e greedy value that can solve the trap of the Local Optimal Solution.
+        :param reward_decay: the reward decay of q learning, while is a number between 0 and 1.
+        :param e_greedy: the e greedy value that can solve the trap of the Local Optimal Solution.
         """
         self.__actions = actions
         # This is q table which the index can uniquely identify a row of data
