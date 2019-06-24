@@ -26,15 +26,15 @@ class QLearningSingleUser:
 
     def select_action(self, observation, mode):
         self.is_exist_state(observation)
-        if mode == 'random':
-            return np.random.choice(self.__actions)
-        elif mode == 'e-greedy':
+        if mode == 1:
             if np.random.uniform() < self.__epsilon:
                 state_action = self.__q_table.loc[observation, :]
                 return np.random.choice(state_action[state_action == np.max(state_action)].index)
             else:
                 return np.random.choice(self.__actions)
-        elif mode == 'greedy':
+        elif mode == 2:
+            return np.random.choice(self.__actions)
+        elif mode == 3:
             state_action = self.__q_table.loc[observation, :]
             return np.random.choice(state_action[state_action == np.max(state_action)].index),
 

@@ -11,11 +11,13 @@ MCS_ACTION = np.arange(0.1, 0.55, 0.02)
 N_USER_MULTI = 60
 N_USER_SINGLE = 2
 
-INTERVAL = 100
+INTERVAL = 100  # for the experiment
 
 FUNC = 1  # only 1(reciprocal) and 2(percentage)
 
 ALGO = 2  # 1(q-learning) 2(cnn-dqn)
+
+POLICY = 2  # 1(e-greedy) 2 (random) 3 (greedy)
 
 # some constant about learning algorithm.
 # about cnn

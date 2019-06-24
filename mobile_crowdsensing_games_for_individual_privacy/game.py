@@ -95,19 +95,19 @@ def game_2user(n_user=N_USER_SINGLE, func=FUNC, algorithm=ALGO):
 
             # 2. select action with q learning
             if algorithm == 1:
-                cur_mcs_action_index = mcs_qtable.select_action(cur_mcs_state, 'e-greedy')
+                cur_mcs_action_index = mcs_qtable.select_action(cur_mcs_state, POLICY)
                 cur_mcs_action = agent_mcs.get_action_value(cur_mcs_action_index)
             # 2. select action with dqn in current
             elif algorithm == 2:
-                cur_mcs_action_index = model_mcs.select_action(cur_mcs_state)
+                cur_mcs_action_index = model_mcs.select_action(cur_mcs_state, POLICY)
                 cur_mcs_action = agent_mcs.get_action_value(cur_mcs_action_index)
             else:
                 raise NameError('function is\'t exist.')
 
-            cur_user1_action_index = user1_qtable.select_action(cur_user1_state, 'e-greedy')
+            cur_user1_action_index = user1_qtable.select_action(cur_user1_state, POLICY)
             cur_user1_action = agent_user1.get_action_value(cur_user1_action_index)
 
-            cur_user2_action_index = user2_qtable.select_action(cur_user2_state, 'e-greedy')
+            cur_user2_action_index = user2_qtable.select_action(cur_user2_state, POLICY)
             cur_user2_action = agent_user2.get_action_value(cur_user2_action_index)
 
             # 3. game
@@ -185,15 +185,15 @@ def game_2user(n_user=N_USER_SINGLE, func=FUNC, algorithm=ALGO):
     else:
         raise NameError('function is\'t exist.')
 
-    save_to_txt_single(matrix_utility_mcs, 'utility', 'egreedy', 'mcs', MAX_STEP, n_user, f, algorithm)
-    save_to_txt_single(matrix_utility_user1, 'utility', 'egreedy', 'user1', MAX_STEP, n_user, f, algorithm)
-    save_to_txt_single(matrix_utility_user2, 'utility', 'egreedy', 'user2', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_single(matrix_utility_mcs, 'utility', POLICY, 'mcs', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_single(matrix_utility_user1, 'utility', POLICY, 'user1', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_single(matrix_utility_user2, 'utility', POLICY, 'user2', MAX_STEP, n_user, f, algorithm)
 
-    save_to_txt_single(matrix_action_mcs_index, 'action', 'egreedy', 'mcs', MAX_STEP, n_user, f, algorithm)
-    save_to_txt_single(matrix_action_user1_index, 'action', 'egreedy', 'user1', MAX_STEP, n_user, f, algorithm)
-    save_to_txt_single(matrix_action_user2_index, 'action', 'egreedy', 'user2', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_single(matrix_action_mcs_index, 'action', POLICY, 'mcs', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_single(matrix_action_user1_index, 'action', POLICY, 'user1', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_single(matrix_action_user2_index, 'action', POLICY, 'user2', MAX_STEP, n_user, f, algorithm)
 
-    save_to_txt_single(matrix_aggregate_error, 'aggregate-error', 'egreedy', 'mcs', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_single(matrix_aggregate_error, 'aggregate-error', POLICY, 'mcs', MAX_STEP, n_user, f, algorithm)
 
     plot_result_single(matrix_utility_mcs,
                        matrix_utility_user1,
@@ -280,11 +280,11 @@ def game_n_user(n_user=N_USER_MULTI, func=FUNC, algorithm=1):
 
             # 2. select action with q table
             if algorithm == 1:
-                cur_mcs_action_index = qtable_mcs.select_action(cur_mcs_state, 'e-greedy')
+                cur_mcs_action_index = qtable_mcs.select_action(cur_mcs_state, POLICY)
                 cur_mcs_action = agent_mcs.get_action_value(cur_mcs_action_index)
             elif algorithm == 2:
                 # 2.1 server
-                cur_mcs_action_index = dqn_mcs.select_action(cur_mcs_state)
+                cur_mcs_action_index = dqn_mcs.select_action(cur_mcs_state, POLICY)
                 cur_mcs_action = agent_mcs.get_action_value(cur_mcs_action_index)
             else:
                 raise NameError('function is\'t exist.')
@@ -293,7 +293,7 @@ def game_n_user(n_user=N_USER_MULTI, func=FUNC, algorithm=1):
             cur_user_action_index = agent_users.zero_user_len(tt=np.int32)
             cur_user_action = agent_users.zero_user_len(tt=np.float32)
             for idx in range(n_user):
-                cur_user_action_index[idx] = qtable_users.select_action(int(idx), cur_user_state[idx], 'e-greedy')
+                cur_user_action_index[idx] = qtable_users.select_action(int(idx), cur_user_state[idx], POLICY)
                 cur_user_action[idx] = agent_users.get_action_value(cur_user_action_index[idx])
 
             # 3. game
@@ -384,17 +384,17 @@ def game_n_user(n_user=N_USER_MULTI, func=FUNC, algorithm=1):
         f = 'percentage'
     else:
         raise NameError('function is\'t exist.')
-    save_to_txt_multi(matrix_utility_mcs, 'utility', 'egreedy', 'mcs', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_multi(matrix_utility_mcs, 'utility', POLICY, 'mcs', MAX_STEP, n_user, f, algorithm)
 
     matrix_utility_user = np.sum(matrix_utility_user, axis=2) / n_user
-    save_to_txt_multi(matrix_utility_user, 'utility', 'egreedy', 'user', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_multi(matrix_utility_user, 'utility', POLICY, 'user', MAX_STEP, n_user, f, algorithm)
 
-    save_to_txt_multi(matrix_action_mcs_index, 'action', 'egreedy', 'mcs', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_multi(matrix_action_mcs_index, 'action', POLICY, 'mcs', MAX_STEP, n_user, f, algorithm)
 
     matrix_action_user_index = np.max(matrix_action_user_index, axis=2)
-    save_to_txt_multi(matrix_action_user_index, 'action', 'egreedy', 'user', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_multi(matrix_action_user_index, 'action', POLICY, 'user', MAX_STEP, n_user, f, algorithm)
 
-    save_to_txt_multi(matrix_aggregate_error, 'aggregate-error', 'egreedy', 'mcs', MAX_STEP, n_user, f, algorithm)
+    save_to_txt_multi(matrix_aggregate_error, 'aggregate-error', POLICY, 'mcs', MAX_STEP, n_user, f, algorithm)
 
     plot_result_multi(matrix_utility_mcs,
                       matrix_utility_user,

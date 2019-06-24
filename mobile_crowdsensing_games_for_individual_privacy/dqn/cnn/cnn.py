@@ -154,26 +154,33 @@ class DQN(object):
         self.steps_done = 0
         self.model.reset()
 
-    def select_action(self, state):
-
+    def select_action(self, state, policy):
+        # 1(e-greedy) 2 (random) 3 (greedy)
         net_input = self.memory.get_net_input(state)
 
         if net_input is not None:
-            sample = random.random()
-            eps_tmp = self.eps_start - \
-                      (self.steps_done - self.learning_begin) * (self.eps_start - self.eps_end) / self.anneal_step
-            eps_tmp = min(self.eps_start, eps_tmp)
-            eps_threshold = max(self.eps_end, eps_tmp)
-            self.steps_done += 1
+            if policy == 1:
+                sample = random.random()
+                eps_tmp = self.eps_start - \
+                          (self.steps_done - self.learning_begin) * (self.eps_start - self.eps_end) / self.anneal_step
+                eps_tmp = min(self.eps_start, eps_tmp)
+                eps_threshold = max(self.eps_end, eps_tmp)
+                self.steps_done += 1
 
-            if sample > eps_threshold:
-                # print(Variable(torch.from_numpy(net_input.reshape(1, -1)).float()))
-                _, action_ind = self.model(Variable(torch.from_numpy(net_input.reshape(1, -1)).float())).data.max(dim=1)
+                if sample > eps_threshold:
+                    # print(Variable(torch.from_numpy(net_input.reshape(1, -1)).float()))
+                    _, action_ind = self.model(Variable(torch.from_numpy(net_input.reshape(1, -1)).float())).data.max(dim=1)
+                    return int(action_ind.item())
 
-                return int(action_ind.item())
-
-            else:
+                else:
+                    return int(random.randrange(self.num_action))
+            elif policy == 2:
                 return int(random.randrange(self.num_action))
+            elif policy == 3:
+                _, action_ind = self.model(Variable(torch.from_numpy(net_input.reshape(1, -1)).float())).data.max(dim=1)
+                return int(action_ind.item())
+            else:
+                raise RuntimeError('the policy value is\'t define.')
 
         else:
             return int(random.randrange(self.num_action))

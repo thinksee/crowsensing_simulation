@@ -112,23 +112,23 @@ def game():
             qlearning_user2.learn(cur_user2_state, cur_user2_action_index, cur_user2_reward, next_user2_state)
 
             # PDS-learning
-            # for i in range(agent_mcs.get_action_length()):
-            #     for snr1 in range(agent_user1.get_snr_length()):
-            #         for action in range(agent_user1.get_action_length()):
-            #             temp = 0
-            #             for snr2 in range(agent_user1.get_snr_length()):
-            #                 prob = agent_user1.select_prob_by_snr(cur_snr_prob1, snr1, snr2)
-            #                 value = qlearning_user1.get_table_point_value(str([i, snr1]), action)
-            #                 temp += prob * value
-            #             qlearning_user1.set_table_point_value(str([i, snr1]), action, temp)
-            #     for snr1 in range(agent_user2.get_snr_length()):
-            #         for action in range(agent_user2.get_action_length()):
-            #             temp = 0
-            #             for snr2 in range(agent_user2.get_snr_length()):
-            #                 prob = agent_user2.select_prob_by_snr(cur_snr_prob2, snr1, snr2)
-            #                 value = qlearning_user2.get_table_point_value(str([i, snr1]), action)
-            #                 temp += prob * value
-            #             qlearning_user2.set_table_point_value(str([i, snr1]), action, temp)
+            for i in range(agent_mcs.get_action_length()):
+                for snr1 in range(agent_user1.get_snr_length()):
+                    for action in range(agent_user1.get_action_length()):
+                        temp = 0
+                        for snr2 in range(agent_user1.get_snr_length()):
+                            prob = agent_user1.select_prob_by_snr(cur_snr_prob1, snr1, snr2)
+                            value = qlearning_user1.get_table_point_value(str([i, snr1]), action)
+                            temp += prob * value
+                        qlearning_user1.set_table_point_value(str([i, snr1]), action, temp)
+                for snr1 in range(agent_user2.get_snr_length()):
+                    for action in range(agent_user2.get_action_length()):
+                        temp = 0
+                        for snr2 in range(agent_user2.get_snr_length()):
+                            prob = agent_user2.select_prob_by_snr(cur_snr_prob2, snr1, snr2)
+                            value = qlearning_user2.get_table_point_value(str([i, snr1]), action)
+                            temp += prob * value
+                        qlearning_user2.set_table_point_value(str([i, snr1]), action, temp)
 
             matrix_utility_mcs[episode][step] = cur_r_mcs
             matrix_utility_user1[episode][step] = cur_user1_reward
