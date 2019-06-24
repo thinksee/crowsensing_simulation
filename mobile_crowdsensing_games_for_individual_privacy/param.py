@@ -31,8 +31,8 @@ EPS_END = 0.1
 LEARNING_BEGIN = 10
 
 # about experiment
-MAX_EPISODE = 10
-MAX_STEP = 50
+MAX_EPISODE = 20
+MAX_STEP = 5000
 
 
 
